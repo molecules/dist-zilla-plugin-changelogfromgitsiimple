@@ -399,14 +399,14 @@ __END__
 
 =head1 NAME
 
-Dist::Zilla::Plugin::ChangelogFromGit - Write a Changes file from a project's git log.
+Dist::Zilla::Plugin::ChangelogFromGitSimple - Write a Changes file from a project's git log.
 
 =head1 SYNOPSIS
 
 Here's an example dist.ini section showing all the current options and
 their default values.
 
-	[ChangelogFromGit]
+	[ChangelogFromGitSimple]
 	max_age     = 365
 	tag_regexp  = ^v(\d+\.\d+)$
 	file_name   = CHANGES
@@ -416,7 +416,7 @@ their default values.
 Variables don't need to be set to their default values.  This is
 equivalent to the configuration above.
 
-	[ChangelogFromGit]
+	[ChangelogFromGitSimple]
 
 =head1 DESCRIPTION
 
@@ -442,7 +442,7 @@ included in the change log.  The default is to include releases going
 back about a year.  To include about two years, one would double the
 default value:
 
-	[ChangelogFromGit]
+	[ChangelogFromGitSimple]
 	max_age = 730
 
 C<max_age> is intended to limit the size of change logs for large,
@@ -455,7 +455,7 @@ C<min_releases> sets the minimum number of releases that should be
 included.  It defaults to 1 so that at least the current release is
 added, regardless of C<max_age>.
 
-	[ChangelogFromGit]
+	[ChangelogFromGitSimple]
 	min_releases = 5
 
 =head2 max_releases = INTEGER
@@ -464,7 +464,7 @@ c<max_releases> allows you limit the number of releases included.
 C<max_age> will still be the limiting factor if it contains fewer
 releases than the max specified.
 
-	[ChangelogFromGit]
+	[ChangelogFromGitSimple]
 	max_releases = 15
 
 =head2 tag_regexp = REGULAR_EXPRESSION
@@ -475,7 +475,7 @@ a regular expression back reference or capture.  For example, a
 project's release tags might match 'release-1.000', 'release-1.001',
 etc.  This C<tag_regexp> will find them and extract their versions.
 
-	[ChangelogFromGit]
+	[ChangelogFromGitSimple]
 	tag_regexp = ^release-(\d+.*)$
 
 There is no single standard format for release tags.  C<tag_regexp>
@@ -488,7 +488,7 @@ C<file_name> sets the name of the change log that will be written.  It
 defaults to "CHANGES", but some people may prefer "Changes",
 "Changelog", or something else.
 
-	[ChangelogFromGit]
+	[ChangelogFromGitSimple]
 	file_name = Changes
 
 =head2 wrap_column = INTEGER
@@ -499,7 +499,7 @@ engineer.  C<wrap_column> sets the line length to which all commit
 messages will be re-wrapped.  It's 74 columns by default.  If this is
 too short:
 
-	[ChangelogFromGit]
+	[ChangelogFromGitSimple]
 	wrap_column = 78
 
 =head2 debug = BOOLEAN
@@ -507,7 +507,7 @@ too short:
 Developers are people, too.  The C<debug> option enables some noisy
 runtime tracing on STDERR.
 
-	[ChangelogFromGit]
+	[ChangelogFromGitSimple]
 	debug = 1
 
 =head2 exclude_message = REGULAR_EXPRESSION
@@ -517,7 +517,7 @@ commit messages.  This provides a way to exclude commit messages such
 as 'forgot to include file X' or 'typo'.  The regular expression is
 case sensitive.
 
-	[ChangelogFromGit]
+	[ChangelogFromGitSimple]
 	exclude_message = ^(forgot|typo)
 
 C<include_message> can be used to do the opposite: exclude all changes
@@ -535,7 +535,7 @@ All other commit messages are ignored.
 
 The regular expression is case sensitive.
 
-	[ChangelogFromGit]
+	[ChangelogFromGitSimple]
 	include_message = ^Major
 
 Using both C<include_message> and C<exclude_message> at the same time
@@ -543,7 +543,7 @@ will most likely result in empty change logs.
 
 =head1 HOW IT WORKS
 
-Dist::Zilla::ChangelogFromGit collects the tags matching C<tag_regexp>
+Dist::Zilla::ChangelogFromGitSimple collects the tags matching C<tag_regexp>
 that are not older than C<max_age> days old.  These are used to
 identify and time stamp releases.  Each release is encapsulated into a
 L<Software::Release> object.
@@ -559,7 +559,7 @@ L<Dist::Zilla::File::InMemory> object representing the new change log.
 
 =head1 SUBCLASSING FOR NEW FORMATS
 
-Dist::Zilla::ChangelogFromGit implement about a dozen methods to
+Dist::Zilla::ChangelogFromGitSimple implements about a dozen methods to
 render the various parts of a change log.  Subclasses may override or
 augment any or all of these methods to alter the way change logs are
 rendered.
@@ -766,7 +766,7 @@ change.
 
 =head2 Formatting Data
 
-Dist::Zilla::Plugin::ChangelogFromGit includes a few methods to
+Dist::Zilla::Plugin::ChangelogFromGitSimple includes a few methods to
 consistently format certain data types.
 
 =head3 format_datetime
@@ -819,7 +819,7 @@ string: the original line preceded and followed by surrounding lines.
 
 =head1 INTERNAL ATTRIBUTES
 
-Dist::Zilla::Plugin::ChangelogFromGit accumulates useful information
+Dist::Zilla::Plugin::ChangelogFromGitSimple accumulates useful information
 into a few internal attributes.  These aren't intended to be
 configured by dist.ini, but they are important for rendering change
 logs.
@@ -870,7 +870,7 @@ the number of changes that have been omitted from the log.
 
 =head1 INTERNAL METHODS
 
-Dist::Zilla::Plugin::ChangelogFromGit implements a couple of
+Dist::Zilla::Plugin::ChangelogFromGitSimple implements a couple of
 "unpublished" methods.  These are not intended for general use.
 
 =head2 gather_files()
@@ -916,9 +916,13 @@ management and maintenance of.
 Cory G. Watson <gphat@cpan.org> - Made formatting extensible and
 overridable.
 
-For the forked version ChangelogFromGitSimple 
+For changes introduced with the forked version ChangelogFromGitSimple 
 Christopher Bottoms <molecules@cpan.org> - Reduced info from individual
 commits in Changes file to just the commit messages themselves.
+
+(By the way, many thanks to Rocco Caputo and Cory G Watson. Hopefully I
+can find the time to redo my changes in a more composable way and
+contribute them back as an option available in the original module).
 
 =head1 COPYRIGHT AND LICENSE
 
